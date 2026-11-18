@@ -1,5 +1,11 @@
 # Development data. Idempotent: safe to run `bin/rails db:seed` many times.
 # Credentials for the seeded accounts come from the environment (defaults are for local use only).
+# Test databases must stay isolated; RSpec creates its own records through factories.
+if Rails.env.test?
+  puts "Skipping seeds in test: RSpec manages its own data."
+  return
+end
+
 # `db:prepare` also seeds a brand-new database (e.g. first production boot): skip instead
 # of failing the boot, and never create an admin with the default password in production.
 if Rails.env.production? && ENV["ADMIN_PASSWORD"].blank?
