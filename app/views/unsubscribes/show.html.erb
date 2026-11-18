@@ -1,0 +1,12 @@
+<% content_for :title, "Cancelar inscrição" %>
+
+<div class="auth-box card">
+  <% if @subscriber.unsubscribed? %>
+    <h1>Inscrição já cancelada</h1>
+    <p><%= @subscriber.email %> não recebe mais a newsletter.</p>
+  <% else %>
+    <h1>Cancelar inscrição</h1>
+    <p>Deseja parar de receber a newsletter em <strong><%= @subscriber.email %></strong>?</p>
+    <%= button_to "Sim, cancelar inscrição", newsletter_unsubscribe_path(token: @subscriber.unsubscribe_token), class: "button button--danger" %>
+  <% end %>
+</div>

@@ -1,0 +1,17 @@
+<table>
+  <thead><tr><th>Assunto</th><th>Status</th><th>Post</th><th>Agendada para</th><th>Destinatários</th><th>Enviados</th><th>Falhas</th></tr></thead>
+  <tbody>
+    <% campaigns.each do |campaign| %>
+      <tr>
+        <td><%= link_to campaign.subject, admin_campaign_path(campaign) %></td>
+        <td><%= status_badge(campaign.status) %></td>
+        <td><%= campaign.post ? truncate(campaign.post.title, length: 40) : "—" %></td>
+        <td><%= format_time(campaign.scheduled_at) %></td>
+        <td><%= campaign.recipients_count %></td>
+        <td><%= campaign.sent_count %></td>
+        <td><%= campaign.failed_count %></td>
+      </tr>
+    <% end %>
+    <% if campaigns.empty? %><tr><td colspan="7" class="muted">Nenhuma campanha ainda.</td></tr><% end %>
+  </tbody>
+</table>

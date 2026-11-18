@@ -1,0 +1,8 @@
+<section class="newsletter-box" id="newsletter">
+  <h3>Newsletter</h3>
+  <p class="muted">Receba os novos artigos por e-mail. Você pode cancelar a qualquer momento.</p>
+  <%= form_with url: newsletter_subscriptions_path, class: "inline-form" do |f| %>
+    <%= f.email_field :email, required: true, placeholder: "seu@email.com", value: current_user&.email_address, "aria-label": "E-mail" %>
+    <%= f.submit "Inscrever-se", class: "button" %>
+  <% end %>
+</section>

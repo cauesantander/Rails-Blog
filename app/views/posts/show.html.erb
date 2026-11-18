@@ -1,0 +1,47 @@
+<% content_for :title, @post.title %>
+
+<article class="post">
+  <% unless @post.visible? %>
+    <div class="flash flash--alert">Pré-visualização: este post não está publicado.</div>
+  <% end %>
+  <p class="meta">
+    <%= @post.published_at ? l(@post.published_at.to_date, format: :long) : "Rascunho" %>
+    · <%= @post.author.name %>
+    <% if @post.category %>· <%= link_to @post.category.name, category_path(@post.category.slug) %><% end %>
+  </p>
+  <h1><%= @post.title %></h1>
+  <% if @post.tags.any? %>
+    <p><% @post.tags.each do |tag| %><%= link_to "##{tag.name}", tag_path(tag.name), class: "tag" %> <% end %></p>
+  <% end %>
+  <div class="prose"><%= markdown(@post.body) %></div>
+</article>
+
+<section class="comments" id="comments">
+  <h2><%= pluralize(@comments.size, "comentário", plural: "comentários") %></h2>
+
+  <% @comments.each do |comment| %>
+    <div class="comment" id="comment-<%= comment.id %>">
+      <%= avatar_for(comment.user, size: 36) %>
+      <div class="comment__body">
+        <p class="meta"><strong><%= comment.user.name %></strong> · <%= time_ago_in_words(comment.created_at) %> atrás</p>
+        <%= simple_format(comment.body) %>
+        <% if policy(comment).destroy? %>
+          <%= button_to "Excluir", post_comment_path(@post, comment), method: :delete, class: "link-button danger",
+                form: { data: { turbo_confirm: "Excluir este comentário?" } } %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div id="new-comment">
+    <% if authenticated? %>
+      <%= form_with model: [@post, @comment], url: post_comments_path(@post) do |f| %>
+        <%= f.label :body, "Deixe seu comentário" %>
+        <%= f.text_area :body, rows: 4, required: true, maxlength: 2000 %>
+        <%= f.submit "Comentar", class: "button" %>
+      <% end %>
+    <% else %>
+      <p class="muted"><%= link_to "Entre", new_session_path %> ou <%= link_to "crie uma conta", new_registration_path %> para comentar.</p>
+    <% end %>
+  </div>
+</section>

@@ -1,0 +1,16 @@
+<% if @campaign.intro.present? %>
+  <%= simple_format(@campaign.intro, style: "line-height:1.5;") %>
+<% end %>
+
+<% if @post %>
+  <div style="border-top:1px solid #e7e5e4;margin-top:24px;padding-top:16px;">
+    <h2 style="margin:0 0 8px;font-size:20px;"><%= link_to @post.title, post_url(@post), style: "color:#b91c1c;text-decoration:none;" %></h2>
+    <p style="line-height:1.5;"><%= @post.summary %></p>
+    <p><%= link_to "Ler o artigo completo →", post_url(@post), style: "color:#b91c1c;" %></p>
+  </div>
+<% end %>
+
+<p style="color:#78716c;font-size:12px;margin-top:32px;">
+  Você recebeu este e-mail porque se inscreveu na newsletter do Rails Blog.
+  <%= link_to "Cancelar inscrição", @unsubscribe_url, style: "color:#78716c;" %>
+</p>

@@ -1,0 +1,34 @@
+<%= render "shared/errors", record: post %>
+
+<%= form_with model: [:admin, post], class: "form-card" do |f| %>
+  <%= f.label :title, "Título" %>
+  <%= f.text_field :title, required: true, maxlength: 150 %>
+
+  <%= f.label :slug, "Slug (deixe em branco para gerar a partir do título)" %>
+  <%= f.text_field :slug, pattern: "[a-z0-9]+(-[a-z0-9]+)*" %>
+
+  <%= f.label :category_id, "Categoria" %>
+  <%= f.collection_select :category_id, Category.alphabetical, :id, :name, include_blank: "Sem categoria" %>
+
+  <%= f.label :tag_list, "Tags (separadas por vírgula)" %>
+  <%= f.text_field :tag_list, placeholder: "ruby, rails, sidekiq" %>
+
+  <%= f.label :excerpt, "Resumo" %>
+  <%= f.text_area :excerpt, rows: 2, maxlength: 300 %>
+
+  <%= f.label :body, "Conteúdo (Markdown)" %>
+  <%= f.text_area :body, rows: 18, required: true, class: "mono" %>
+
+  <div class="grid-2">
+    <div>
+      <%= f.label :status, "Status" %>
+      <%= f.select :status, Post.statuses.keys.map { [ApplicationHelper::STATUS_LABELS[it], it] } %>
+    </div>
+    <div>
+      <%= f.label :published_at, "Data de publicação (futuro = agendado)" %>
+      <%= f.datetime_field :published_at %>
+    </div>
+  </div>
+
+  <%= f.submit "Salvar", class: "button" %>
+<% end %>

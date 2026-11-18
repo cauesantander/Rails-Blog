@@ -1,0 +1,26 @@
+<% content_for :title, "Usuários" %>
+<h1>Usuários</h1>
+
+<table>
+  <thead><tr><th></th><th>Nome</th><th>E-mail</th><th>Papel</th><th>Desde</th><th></th></tr></thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= avatar_for(user, size: 28) %></td>
+        <td><%= user.name %></td>
+        <td><%= user.email_address %></td>
+        <td><%= status_badge(user.role) %></td>
+        <td><%= l(user.created_at.to_date) %></td>
+        <td class="actions">
+          <% if policy(user).update_role? %>
+            <% new_role = user.admin? ? "reader" : "admin" %>
+            <%= button_to (user.admin? ? "Tornar leitor" : "Tornar admin"), admin_user_path(user), method: :patch,
+                  params: { role: new_role }, class: "link-button",
+                  form: { data: { turbo_confirm: "Alterar o papel de #{user.name}?" } } %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= paginate @users %>

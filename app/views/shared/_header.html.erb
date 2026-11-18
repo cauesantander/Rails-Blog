@@ -1,0 +1,20 @@
+<header class="header">
+  <div class="container header__inner">
+    <%= link_to "Rails Blog", root_path, class: "brand" %>
+    <nav class="header__nav">
+      <%= link_to "Posts", posts_path %>
+      <% if authenticated? %>
+        <% if current_user.admin? %>
+          <%= link_to "Admin", admin_root_path %>
+        <% end %>
+        <%= link_to profile_path, class: "header__user" do %>
+          <%= avatar_for(current_user, size: 28) %> <%= current_user.name %>
+        <% end %>
+        <%= button_to "Sair", session_path, method: :delete, class: "link-button" %>
+      <% else %>
+        <%= link_to "Entrar", new_session_path %>
+        <%= link_to "Criar conta", new_registration_path, class: "button button--small" %>
+      <% end %>
+    </nav>
+  </div>
+</header>

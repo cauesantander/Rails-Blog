@@ -1,0 +1,41 @@
+<% content_for :title, "Painel" %>
+<h1>Painel administrativo</h1>
+
+<div class="stats">
+  <div class="stat"><span><%= @counts[:published_posts] %></span>posts publicados</div>
+  <div class="stat"><span><%= @counts[:draft_posts] %></span>rascunhos</div>
+  <div class="stat"><span><%= @counts[:comments] %></span>comentários (<%= @counts[:hidden_comments] %> ocultos)</div>
+  <div class="stat"><span><%= @counts[:users] %></span>usuários</div>
+  <div class="stat"><span><%= @counts[:confirmed_subscribers] %></span>inscritos confirmados</div>
+  <div class="stat"><span><%= @counts[:pending_subscribers] %></span>inscrições pendentes</div>
+</div>
+
+<h2>Filas (Sidekiq)</h2>
+<% if @queues.available %>
+  <div class="stats">
+    <div class="stat"><span><%= @queues.processes %></span>processos worker</div>
+    <div class="stat"><span><%= @queues.enqueued %></span>na fila</div>
+    <div class="stat"><span><%= @queues.scheduled %></span>agendados</div>
+    <div class="stat"><span><%= @queues.retries %></span>aguardando retry</div>
+    <div class="stat"><span><%= @queues.dead %></span>mortos (dead)</div>
+    <div class="stat"><span><%= number_with_delimiter(@queues.processed) %></span>processados</div>
+  </div>
+  <% if @queues.processes.zero? %>
+    <p class="flash flash--alert">Nenhum processo Sidekiq ativo: os jobs ficarão na fila até um worker iniciar.</p>
+  <% end %>
+  <table>
+    <thead><tr><th>Fila</th><th>Tamanho</th><th>Latência (s)</th></tr></thead>
+    <tbody>
+      <% @queues.queues.each do |queue| %>
+        <tr><td><%= queue[:name] %></td><td><%= queue[:size] %></td><td><%= queue[:latency] %></td></tr>
+      <% end %>
+      <% if @queues.queues.empty? %><tr><td colspan="3" class="muted">Todas as filas vazias.</td></tr><% end %>
+    </tbody>
+  </table>
+  <p><%= link_to "Abrir o painel completo do Sidekiq ↗", "/admin/sidekiq", target: "_blank", rel: "noopener" %></p>
+<% else %>
+  <p class="flash flash--alert">Redis indisponível: <%= @queues.error %></p>
+<% end %>
+
+<h2>Campanhas recentes</h2>
+<%= render "admin/campaigns/table", campaigns: @recent_campaigns %>

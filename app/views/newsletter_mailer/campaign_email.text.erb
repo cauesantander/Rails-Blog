@@ -1,0 +1,11 @@
+<%= @campaign.intro %>
+<% if @post %>
+
+<%= @post.title %>
+<%= @post.summary %>
+
+Ler o artigo completo: <%= post_url(@post) %>
+<% end %>
+
+--
+Cancelar inscrição: <%= @unsubscribe_url %>

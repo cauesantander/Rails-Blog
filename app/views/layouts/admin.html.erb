@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <title><%= content_for?(:title) ? "#{yield(:title)} · Admin" : "Admin · Rails Blog" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="admin">
+    <%= render "shared/header" %>
+    <div class="container admin-layout">
+      <nav class="admin-nav">
+        <%= link_to "Painel", admin_root_path %>
+        <%= link_to "Posts", admin_posts_path %>
+        <%= link_to "Categorias", admin_categories_path %>
+        <%= link_to "Comentários", admin_comments_path %>
+        <%= link_to "Inscritos", admin_subscribers_path %>
+        <%= link_to "Campanhas", admin_campaigns_path %>
+        <%= link_to "Usuários", admin_users_path %>
+        <%= link_to "Sidekiq ↗", "/admin/sidekiq", target: "_blank", rel: "noopener" %>
+      </nav>
+      <main>
+        <%= render "shared/flash" %>
+        <%= yield %>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+<% content_for :title, "Posts" %>
+<div class="page-head">
+  <h1>Posts</h1>
+  <%= link_to "Novo post", new_admin_post_path, class: "button" %>
+</div>
+
+<nav class="chips">
+  <%= link_to "Todos", admin_posts_path, class: ["chip", ("chip--active" if params[:status].blank?)] %>
+  <% Post.statuses.each_key do |status| %>
+    <%= link_to status_badge(status), admin_posts_path(status:), class: ["chip", ("chip--active" if params[:status] == status)] %>
+  <% end %>
+</nav>
+
+<table>
+  <thead><tr><th>Título</th><th>Status</th><th>Categoria</th><th>Publicado em</th><th>Comentários</th><th></th></tr></thead>
+  <tbody>
+    <% @posts.each do |post| %>
+      <tr>
+        <td><%= link_to post.title, admin_post_path(post) %></td>
+        <td><%= status_badge(post.status) %></td>
+        <td><%= post.category&.name || "—" %></td>
+        <td><%= format_time(post.published_at) %></td>
+        <td><%= post.comments_count %></td>
+        <td class="actions">
+          <%= link_to "Editar", edit_admin_post_path(post) %>
+          <% if post.published? %>
+            <%= button_to "Despublicar", unpublish_admin_post_path(post), class: "link-button" %>
+          <% else %>
+            <%= button_to "Publicar", publish_admin_post_path(post), class: "link-button" %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= paginate @posts %>

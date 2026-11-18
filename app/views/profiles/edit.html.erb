@@ -1,0 +1,36 @@
+<% content_for :title, "Editar perfil" %>
+
+<div class="card form-card">
+  <h1>Editar perfil</h1>
+  <%= render "shared/errors", record: @user %>
+
+  <%= form_with model: @user, url: profile_path, method: :patch do |f| %>
+    <%= f.label :name, "Nome" %>
+    <%= f.text_field :name, required: true, maxlength: 80 %>
+
+    <%= f.label :bio, "Sobre você" %>
+    <%= f.text_area :bio, rows: 4, maxlength: 500 %>
+
+    <%= f.label :avatar, "Avatar (PNG, JPEG, WEBP ou GIF, até 2 MB)" %>
+    <div class="avatar-field">
+      <%= avatar_for(@user, size: 64) %>
+      <%= f.file_field :avatar, accept: User::AVATAR_CONTENT_TYPES.join(",") %>
+    </div>
+    <% if @user.avatar.attached? %>
+      <label class="checkbox"><%= check_box_tag "user[remove_avatar]", "1", false %> Remover avatar atual</label>
+    <% end %>
+
+    <fieldset>
+      <legend>Alterar senha (opcional)</legend>
+      <%= f.label :password_challenge, "Senha atual" %>
+      <%= f.password_field :password_challenge, autocomplete: "current-password", maxlength: 72 %>
+      <%= f.label :password, "Nova senha" %>
+      <%= f.password_field :password, autocomplete: "new-password", maxlength: 72 %>
+      <%= f.label :password_confirmation, "Confirme a nova senha" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", maxlength: 72 %>
+    </fieldset>
+
+    <%= f.submit "Salvar", class: "button" %>
+    <%= link_to "Cancelar", profile_path %>
+  <% end %>
+</div>

@@ -1,0 +1,16 @@
+<% content_for :title, "Entrar" %>
+
+<div class="auth-box card">
+  <h1>Entrar</h1>
+  <%= form_with url: session_path do |form| %>
+    <%= form.label :email_address, "E-mail" %>
+    <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address] %>
+    <%= form.label :password, "Senha" %>
+    <%= form.password_field :password, required: true, autocomplete: "current-password", maxlength: 72 %>
+    <%= form.submit "Entrar", class: "button" %>
+  <% end %>
+  <p class="muted">
+    <%= link_to "Esqueci minha senha", new_password_path %> ·
+    <%= link_to "Criar conta", new_registration_path %>
+  </p>
+</div>

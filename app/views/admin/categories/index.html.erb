@@ -1,0 +1,26 @@
+<% content_for :title, "Categorias" %>
+<h1>Categorias</h1>
+
+<%= render "shared/errors", record: @category %>
+<%= form_with model: [:admin, @category], class: "inline-form" do |f| %>
+  <%= f.text_field :name, placeholder: "Nova categoria", required: true, maxlength: 50, "aria-label": "Nome" %>
+  <%= f.submit "Adicionar", class: "button" %>
+<% end %>
+
+<table>
+  <thead><tr><th>Nome</th><th>Slug</th><th>Posts</th><th></th></tr></thead>
+  <tbody>
+    <% @categories.each do |category| %>
+      <tr>
+        <td><%= category.name %></td>
+        <td><code><%= category.slug %></code></td>
+        <td><%= category.try(:posts_count) || category.posts.count %></td>
+        <td class="actions">
+          <%= link_to "Editar", edit_admin_category_path(category) %>
+          <%= button_to "Excluir", admin_category_path(category), method: :delete, class: "link-button danger",
+                form: { data: { turbo_confirm: "Excluir a categoria #{category.name}?" } } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

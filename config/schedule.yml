@@ -1,0 +1,13 @@
+# Periodic jobs loaded by sidekiq-cron when the Sidekiq server boots.
+# Visible (and can be triggered manually) under /admin/sidekiq/cron.
+schedule_due_campaigns:
+  cron: "* * * * *"
+  class: "Newsletter::ScheduleDueCampaignsJob"
+  queue: newsletter_dispatch
+  description: "Enqueues newsletter campaigns whose scheduled_at has passed"
+
+recover_stuck_deliveries:
+  cron: "*/10 * * * *"
+  class: "Newsletter::RecoverStuckDeliveriesJob"
+  queue: newsletter_dispatch
+  description: "Re-enqueues deliveries abandoned by a crashed worker"

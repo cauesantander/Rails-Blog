@@ -1,0 +1,8 @@
+<% content_for :title, "Campanhas" %>
+<div class="page-head">
+  <h1>Campanhas de newsletter</h1>
+  <%= link_to "Nova campanha", new_admin_campaign_path, class: "button" %>
+</div>
+
+<%= render "table", campaigns: @campaigns %>
+<%= paginate @campaigns %>

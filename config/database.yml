@@ -1,0 +1,26 @@
+# PostgreSQL. Connection settings come from environment variables so that the
+# same file works inside Docker Compose (DB_HOST=db), on a local install
+# (DB_HOST=localhost) and in production (DATABASE_URL takes precedence).
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  port: <%= ENV.fetch("DB_PORT_INTERNAL", 5432) %>
+  username: <%= ENV.fetch("DB_USER", "postgres") %>
+  password: <%= ENV.fetch("DB_PASSWORD", "postgres") %>
+  # Puma threads + Sidekiq concurrency each need a connection.
+  max_connections: <%= ENV.fetch("DB_POOL") { [ENV.fetch("RAILS_MAX_THREADS", 5).to_i, ENV.fetch("SIDEKIQ_CONCURRENCY", 5).to_i].max } %>
+
+development:
+  <<: *default
+  database: rails_blog_development
+
+test:
+  <<: *default
+  database: rails_blog_test
+
+# In production prefer DATABASE_URL (e.g. postgres://user:pass@host:5432/rails_blog_production),
+# which Rails merges over these keys.
+production:
+  <<: *default
+  database: rails_blog_production

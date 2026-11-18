@@ -1,0 +1,79 @@
+<% content_for :title, @campaign.subject %>
+<div class="page-head">
+  <h1><%= @campaign.subject %> <%= status_badge(@campaign.status) %></h1>
+  <div class="actions">
+    <% if @campaign.editable? %>
+      <%= link_to "Editar", edit_admin_campaign_path(@campaign), class: "button button--secondary" %>
+    <% end %>
+    <% if @campaign.scheduled? %>
+      <%= button_to "Remover agendamento", unschedule_admin_campaign_path(@campaign), class: "button button--secondary" %>
+    <% end %>
+    <% if @campaign.editable? %>
+      <%= button_to "Cancelar campanha", cancel_admin_campaign_path(@campaign), class: "button button--danger",
+            form: { data: { turbo_confirm: "Cancelar esta campanha?" } } %>
+    <% end %>
+    <% if (@campaign.sent? || @campaign.sending?) && @campaign.failed_count.positive? %>
+      <%= button_to "Reenviar falhas (#{@campaign.failed_count})", retry_failed_admin_campaign_path(@campaign), class: "button" %>
+    <% end %>
+  </div>
+</div>
+
+<% if @campaign.draft? %>
+  <div class="card">
+    <h2>Enviar</h2>
+    <p class="muted">Destinatários: inscritos confirmados no momento do disparo (<%= Subscriber.confirmed.count %> hoje).</p>
+    <%= form_with url: schedule_admin_campaign_path(@campaign), class: "inline-form" do |f| %>
+      <%= f.datetime_field :scheduled_at, "aria-label": "Agendar para" %>
+      <%= f.submit "Agendar", class: "button button--secondary" %>
+    <% end %>
+    <%= button_to "Enviar agora", schedule_admin_campaign_path(@campaign), class: "button",
+          form: { data: { turbo_confirm: "Enviar para todos os inscritos confirmados agora?" } } %>
+  </div>
+<% end %>
+
+<div class="stats">
+  <div class="stat"><span><%= @campaign.recipients_count %></span>destinatários</div>
+  <div class="stat"><span><%= @campaign.sent_count %></span>enviados</div>
+  <div class="stat"><span><%= @campaign.failed_count %></span>falhas</div>
+  <div class="stat"><span><%= @delivery_counts.fetch("pending", 0) + @delivery_counts.fetch("sending", 0) %></span>em andamento</div>
+  <div class="stat"><span><%= @campaign.progress_percent %>%</span>progresso</div>
+</div>
+
+<p class="meta">
+  Criada por <%= @campaign.created_by.name %> em <%= format_time(@campaign.created_at) %> ·
+  Agendada: <%= format_time(@campaign.scheduled_at) %> · Enfileirada: <%= format_time(@campaign.queued_at) %> ·
+  Iniciada: <%= format_time(@campaign.started_at) %> · Concluída: <%= format_time(@campaign.finished_at) %>
+  <% if @campaign.post %>· Post: <%= link_to @campaign.post.title, admin_post_path(@campaign.post) %><% end %>
+</p>
+<% if @campaign.intro.present? %><div class="card"><%= simple_format(@campaign.intro) %></div><% end %>
+
+<% if @campaign.sending? || @campaign.queued? %>
+  <p class="muted">Envio em andamento — <%= link_to "atualizar", admin_campaign_path(@campaign) %>.</p>
+<% end %>
+
+<h2>Destinatários</h2>
+<nav class="chips">
+  <%= link_to "Todos", admin_campaign_path(@campaign), class: ["chip", ("chip--active" if params[:status].blank?)] %>
+  <% CampaignDelivery.statuses.each_key do |status| %>
+    <%= link_to admin_campaign_path(@campaign, status:), class: ["chip", ("chip--active" if params[:status] == status)] do %>
+      <%= status_badge(status) %> <%= @delivery_counts.fetch(status, 0) %>
+    <% end %>
+  <% end %>
+</nav>
+<table>
+  <thead><tr><th>E-mail</th><th>Status</th><th>Tentativas</th><th>Enviado em</th><th>ID no provedor</th><th>Último erro</th></tr></thead>
+  <tbody>
+    <% @deliveries.each do |delivery| %>
+      <tr>
+        <td><%= delivery.email %></td>
+        <td><%= status_badge(delivery.status) %></td>
+        <td><%= delivery.attempts %></td>
+        <td><%= format_time(delivery.sent_at) %></td>
+        <td><code><%= delivery.provider_message_id || "—" %></code></td>
+        <td class="error-cell"><%= delivery.last_error.presence || "—" %></td>
+      </tr>
+    <% end %>
+    <% if @deliveries.empty? %><tr><td colspan="6" class="muted">Nenhum destinatário.</td></tr><% end %>
+  </tbody>
+</table>
+<%= paginate @deliveries %>

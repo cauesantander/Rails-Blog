@@ -1,0 +1,13 @@
+<% content_for :title, "Meu perfil" %>
+
+<div class="card profile">
+  <%= avatar_for(@user, size: 96) %>
+  <div>
+    <h1><%= @user.name %></h1>
+    <p class="muted"><%= @user.email_address %> · <%= status_badge(@user.role) %></p>
+    <% if @user.bio.present? %><%= simple_format(@user.bio) %><% end %>
+    <p class="muted">Membro desde <%= l(@user.created_at.to_date, format: :long) %> ·
+       <%= pluralize(@user.comments.count, "comentário", plural: "comentários") %></p>
+    <%= link_to "Editar perfil", edit_profile_path, class: "button" %>
+  </div>
+</div>

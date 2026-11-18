@@ -1,0 +1,13 @@
+<article class="card post-card" id="<%= dom_id(post) %>">
+  <p class="meta">
+    <%= l(post.published_at.to_date, format: :long) %>
+    · <%= post.author.name %>
+    <% if post.category %>· <%= link_to post.category.name, category_path(post.category.slug) %><% end %>
+  </p>
+  <h2><%= link_to post.title, post_path(post) %></h2>
+  <p><%= post.summary %></p>
+  <p class="meta">
+    <% post.tags.each do |tag| %><%= link_to "##{tag.name}", tag_path(tag.name), class: "tag" %> <% end %>
+    · <%= pluralize(post.comments_count, "comentário", plural: "comentários") %>
+  </p>
+</article>

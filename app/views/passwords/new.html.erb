@@ -1,0 +1,11 @@
+<% content_for :title, "Recuperar senha" %>
+
+<div class="auth-box card">
+  <h1>Esqueceu a senha?</h1>
+  <p class="muted">Informe seu e-mail e enviaremos um link para redefini-la.</p>
+  <%= form_with url: passwords_path do |form| %>
+    <%= form.label :email_address, "E-mail" %>
+    <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address] %>
+    <%= form.submit "Enviar instruções", class: "button" %>
+  <% end %>
+</div>

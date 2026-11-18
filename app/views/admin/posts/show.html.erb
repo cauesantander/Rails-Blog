@@ -1,0 +1,24 @@
+<% content_for :title, @post.title %>
+<div class="page-head">
+  <h1><%= @post.title %> <%= status_badge(@post.status) %></h1>
+  <div class="actions">
+    <%= link_to "Editar", edit_admin_post_path(@post), class: "button" %>
+    <% if @post.published? %>
+      <%= button_to "Despublicar", unpublish_admin_post_path(@post), class: "button button--secondary" %>
+      <%= link_to "Ver no site", post_path(@post), class: "button button--secondary" %>
+      <%= link_to "Criar campanha de newsletter", new_admin_campaign_path(post_id: @post.id), class: "button button--secondary" %>
+    <% else %>
+      <%= button_to "Publicar", publish_admin_post_path(@post), class: "button button--secondary" %>
+    <% end %>
+    <%= button_to "Excluir", admin_post_path(@post), method: :delete, class: "button button--danger",
+          form: { data: { turbo_confirm: "Excluir este post e seus comentários?" } } %>
+  </div>
+</div>
+
+<p class="meta">
+  Slug: <code><%= @post.slug %></code> · Autor: <%= @post.author.name %> ·
+  Categoria: <%= @post.category&.name || "—" %> · Tags: <%= @post.tag_list.presence || "—" %> ·
+  Publicado em: <%= format_time(@post.published_at) %>
+</p>
+<% if @post.excerpt.present? %><p><em><%= @post.excerpt %></em></p><% end %>
+<div class="card prose"><%= markdown(@post.body) %></div>

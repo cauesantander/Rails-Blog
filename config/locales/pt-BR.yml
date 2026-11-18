@@ -1,0 +1,52 @@
+# Base translations (validation messages, dates) come from the rails-i18n gem.
+# This file adds the app's model/attribute names and pagination labels.
+pt-BR:
+  activerecord:
+    models:
+      user: Usuário
+      post: Post
+      category: Categoria
+      tag: Tag
+      comment: Comentário
+      subscriber: Inscrito
+      campaign: Campanha
+      campaign_delivery: Envio
+    attributes:
+      user:
+        name: Nome
+        email_address: E-mail
+        password: Senha
+        password_confirmation: Confirmação de senha
+        password_challenge: Senha atual
+        bio: Sobre
+        avatar: Avatar
+        role: Papel
+      post:
+        title: Título
+        slug: Slug
+        excerpt: Resumo
+        body: Conteúdo
+        status: Status
+        published_at: Data de publicação
+        category: Categoria
+      category:
+        name: Nome
+      comment:
+        body: Comentário
+      subscriber:
+        email: E-mail
+      campaign:
+        subject: Assunto
+        intro: Introdução
+        post: Post
+        scheduled_at: Data de agendamento
+  views:
+    pagination:
+      first: "&laquo; Primeira"
+      last: "Última &raquo;"
+      previous: "&lsaquo; Anterior"
+      next: "Próxima &rsaquo;"
+      truncate: "&hellip;"
+  time:
+    formats:
+      short: "%d/%m/%Y %H:%M"

@@ -1,0 +1,26 @@
+<% content_for :title, @category&.name || (@tag && "##{@tag.name}") || "Posts" %>
+
+<div class="page-head">
+  <h1>
+    <% if @category %>Categoria: <%= @category.name %>
+    <% elsif @tag %>Tag: #<%= @tag.name %>
+    <% else %>Últimas publicações<% end %>
+  </h1>
+  <% if @categories.any? %>
+    <nav class="chips">
+      <%= link_to "Todas", posts_path, class: ["chip", ("chip--active" unless @category)] %>
+      <% @categories.each do |category| %>
+        <%= link_to category.name, category_path(category.slug), class: ["chip", ("chip--active" if category == @category)] %>
+      <% end %>
+    </nav>
+  <% end %>
+</div>
+
+<% if @posts.empty? %>
+  <p class="muted">Nenhuma publicação encontrada.</p>
+<% else %>
+  <div class="post-list">
+    <%= render partial: "posts/post_card", collection: @posts, as: :post %>
+  </div>
+  <%= paginate @posts %>
+<% end %>

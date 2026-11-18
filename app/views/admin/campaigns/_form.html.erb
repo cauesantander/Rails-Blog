@@ -1,0 +1,14 @@
+<%= render "shared/errors", record: campaign %>
+
+<%= form_with model: [:admin, campaign], class: "form-card" do |f| %>
+  <%= f.label :subject, "Assunto do e-mail" %>
+  <%= f.text_field :subject, required: true, maxlength: 150 %>
+
+  <%= f.label :post_id, "Post divulgado (opcional, precisa estar publicado no envio)" %>
+  <%= f.collection_select :post_id, Post.visible.recent.limit(50), :id, :title, include_blank: "Nenhum" %>
+
+  <%= f.label :intro, "Texto de introdução" %>
+  <%= f.text_area :intro, rows: 8, maxlength: 5000 %>
+
+  <%= f.submit "Salvar rascunho", class: "button" %>
+<% end %>

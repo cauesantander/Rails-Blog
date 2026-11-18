@@ -1,0 +1,34 @@
+<% content_for :title, "Comentários" %>
+<h1>Moderação de comentários</h1>
+
+<nav class="chips">
+  <%= link_to "Todos", admin_comments_path, class: ["chip", ("chip--active" if params[:status].blank?)] %>
+  <% Comment.statuses.each_key do |status| %>
+    <%= link_to status_badge(status), admin_comments_path(status:), class: ["chip", ("chip--active" if params[:status] == status)] %>
+  <% end %>
+</nav>
+
+<table>
+  <thead><tr><th>Autor</th><th>Comentário</th><th>Post</th><th>Status</th><th>Data</th><th></th></tr></thead>
+  <tbody>
+    <% @comments.each do |comment| %>
+      <tr id="<%= dom_id(comment) %>">
+        <td><%= comment.user.name %></td>
+        <td><%= truncate(comment.body, length: 120) %></td>
+        <td><%= link_to truncate(comment.post.title, length: 40), admin_post_path(comment.post) %></td>
+        <td><%= status_badge(comment.status) %></td>
+        <td><%= format_time(comment.created_at) %></td>
+        <td class="actions">
+          <% if comment.visible? %>
+            <%= button_to "Ocultar", admin_comment_path(comment), method: :patch, params: { status: "hidden" }, class: "link-button" %>
+          <% else %>
+            <%= button_to "Restaurar", admin_comment_path(comment), method: :patch, params: { status: "visible" }, class: "link-button" %>
+          <% end %>
+          <%= button_to "Excluir", admin_comment_path(comment), method: :delete, class: "link-button danger",
+                form: { data: { turbo_confirm: "Excluir definitivamente?" } } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= paginate @comments %>

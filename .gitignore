@@ -1,0 +1,35 @@
+# Bundler
+/.bundle
+
+# Environment / secrets (never commit real credentials)
+/.env
+/.env.*
+!/.env.example
+/config/master.key
+/config/credentials/*.key
+
+# Logs, temp files, uploads
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+/tmp/pids/*
+!/tmp/pids/.keep
+/tmp/storage/*
+!/tmp/storage/.keep
+/storage/*
+!/storage/.keep
+
+# Assets
+/public/assets
+/node_modules
+
+# Test coverage (SimpleCov)
+/coverage
+
+# Editors / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
